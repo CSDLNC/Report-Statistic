@@ -58,7 +58,7 @@ IF(@option = N'Tháng') --báo cáo doanh thu theo tháng
 		SET @sqlstring = @sqlstring + ' AND DATEPART(MONTH,H.ngayThanhToan) = @m'
 		--thêm group by và order
 		SET @sqlstring = @sqlstring + ' GROUP BY DATEPART(MONTH,H.ngayThanhToan), K.maKS, K.tenKS'
-		--SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'
+		SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'
 	END
 
 ELSE IF((@option = N'Năm' AND @m IS NULL AND @y IS NOT NULL)
@@ -76,7 +76,7 @@ BEGIN
 		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y'
 	--thêm group by và order
 	SET @sqlstring = @sqlstring + ' GROUP BY K.maKS, K.tenKS, DATEPART(YEAR,H.ngayThanhToan)'
-	--SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'
+	SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'
 END
 
 ELSE IF (@option=N'Tháng, Năm')
@@ -94,7 +94,7 @@ BEGIN
 		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y AND DATEPART(MONTH,H.ngayThanhToan) = @m'
 	---thêm phần group by và order
 		SET @sqlstring = @sqlstring + ' GROUP BY K.maKS, K.tenKS, DATEPART(MONTH,H.ngayThanhToan), DATEPART(YEAR,H.ngayThanhToan) '
-		--SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'
+		SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'
 END
 
 ELSE

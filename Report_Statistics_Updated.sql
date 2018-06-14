@@ -45,7 +45,7 @@ GO
 ALTER PROCEDURE SP_RevenueReport (@option NVARCHAR(10),@hotelname NVARCHAR(50), @m INT, @y INT)
 AS BEGIN
 DECLARE @sqlstring nvarchar(1500), @input nvarchar(100)
-IF(@option = N'Tháng') --báo cáo doanh thu theo tháng
+IF(@option = N'Tháng' AND @y IS NULL) --báo cáo doanh thu theo tháng
 	BEGIN
 	SET @sqlstring = 'SELECT K.maKS, K.tenKS, DATEPART(MONTH,H.ngayThanhToan) as Thang, SUM(H.tongTien) as DoanhThu
 						      FROM HoaDon H, DatPhong D, LoaiPhong L, KhachSan K
@@ -61,8 +61,7 @@ IF(@option = N'Tháng') --báo cáo doanh thu theo tháng
 		SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'
 	END
 
-ELSE IF((@option = N'Năm' AND @m IS NULL AND @y IS NOT NULL)
-   OR (@option = N'Năm' AND @m IS NULL AND @y IS NULL)) ---báo cáo doanh thu theo năm
+ELSE IF(@option = N'Năm' AND @m IS NULL) ---báo cáo doanh thu theo năm
 
 BEGIN
 	SET @sqlstring = 'SELECT K.maKS, K.tenKS,DATEPART(YEAR,H.ngayThanhToan) as Nam, SUM(H.tongTien) as DoanhThu
@@ -88,10 +87,16 @@ BEGIN
 	IF(@hotelname IS NOT NULL)---báo cáo theo khách sạn
 		SET @sqlstring = @sqlstring + ' AND K.tenKS LIKE N''%' +@hotelname + '%'''
 	---IF(@m IS NULL AND @y IS NULL) ---tháng bất kỳ, năm bất kỳ ---không làm gì hết
-	IF(@m IS NULL AND @y IS NOT NULL) ---tháng bất kỳ, năm cho trước
+	/*IF(@m IS NULL AND @y IS NOT NULL) ---tháng bất kỳ, năm cho trước
 		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y'	
 	IF(@m IS NOT NULL AND @y IS NOT NULL) ---tháng cho trước, năm cho trươc
-		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y AND DATEPART(MONTH,H.ngayThanhToan) = @m'
+		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y AND DATEPART(MONTH,H.ngayThanhToan) = @m'*/
+	--IF(@m IS NULL) --không làm gì cả
+	IF(@m IS NOT NULL) 
+		SET @sqlstring = @sqlstring + ' AND DATEPART(MONTH,H.ngayThanhToan) = @m'
+	--IF(@y IS NULL) --không làm gì cả
+	IF(@y IS NOT NULL)
+		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y'
 	---thêm phần group by và order
 		SET @sqlstring = @sqlstring + ' GROUP BY K.maKS, K.tenKS, DATEPART(MONTH,H.ngayThanhToan), DATEPART(YEAR,H.ngayThanhToan) '
 		SET @sqlstring = @sqlstring + ' ORDER BY K.maKS'

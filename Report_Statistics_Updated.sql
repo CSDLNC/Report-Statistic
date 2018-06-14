@@ -86,11 +86,6 @@ BEGIN
 	---IF(@hotelname IS NULL) ---không báo cáo theo khách sạn --không làm gì cả
 	IF(@hotelname IS NOT NULL)---báo cáo theo khách sạn
 		SET @sqlstring = @sqlstring + ' AND K.tenKS LIKE N''%' +@hotelname + '%'''
-	---IF(@m IS NULL AND @y IS NULL) ---tháng bất kỳ, năm bất kỳ ---không làm gì hết
-	/*IF(@m IS NULL AND @y IS NOT NULL) ---tháng bất kỳ, năm cho trước
-		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y'	
-	IF(@m IS NOT NULL AND @y IS NOT NULL) ---tháng cho trước, năm cho trươc
-		SET @sqlstring = @sqlstring + ' AND DATEPART(YEAR,H.ngayThanhToan) = @y AND DATEPART(MONTH,H.ngayThanhToan) = @m'*/
 	--IF(@m IS NULL) --không làm gì cả
 	IF(@m IS NOT NULL) 
 		SET @sqlstring = @sqlstring + ' AND DATEPART(MONTH,H.ngayThanhToan) = @m'
